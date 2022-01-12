@@ -15,7 +15,7 @@ const FRIENDS = [
     id: '1',
     firstName: 'Jason',
     lastName: 'Li',
-    tags: ['Outgoing Guy, Over 21'],
+    tags: ['Outgoing Guy', 'Over 21'],
   },
   {
     id: '2',
@@ -103,14 +103,48 @@ const FRIENDS = [
   },
 ];
 
+app.use(cors());
+
 app.get('/api/friends', (req, res) => {
-  res.send({ friends: FRIENDS })
+  return res.send({ friends: FRIENDS })
+})
+
+app.get('/api/search', async (req, res) => {
+  const { searchQuery, tags } = req.query;
+  const name = new RegExp(searchQuery, 'i');
+  let findMatch;
+  let searchMatch;
+  let tagsMatch;
+
+  searchMatch = await FRIENDS.filter(friends => {
+    let firstName = friends.firstName;
+    let lastName = friends.lastName;
+    return firstName.match(name) || lastName.match(name)
+  })
+
+  if (tags) {
+    tagsMatch = await FRIENDS.filter(friends => {
+      const loweredTags = friends.tags.map(tag => tag.replace(/\s/g, '').toLowerCase())
+      return loweredTags.some(ele => tags.split(',').includes(ele))
+    })
+  }
+
+  let resultWithDupes;
+  if (searchQuery && tags) {
+    resultWithDupes = [...searchMatch, ...tagsMatch]
+    findMatch = Array.from(new Set(resultWithDupes.map(a => a.id))).map(
+      id => { return resultWithDupes.find(a => a.id === id) }
+    )
+  } else if (searchQuery) {
+    findMatch = searchMatch
+  } else if (tags) {
+    findMatch = tagsMatch
+  }
+
+  res.send(findMatch)
 })
 
 
-
-
-app.use(cors());
 
 const PORT = process.env.PORT || 5000;
 
