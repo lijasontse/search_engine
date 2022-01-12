@@ -9,6 +9,14 @@ function App() {
   const [friends, setFriends] = useState([]);
   const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [groupFriends, setGroupFriends] = useState([]);
+  const [events, setEvents] = useState([]);
+
+  const fetchEvents = async () => {
+    const res = await axios.get('/api/events');
+    console.log(res.data.events)
+    setEvents(res.data.events)
+  }
 
 
   const fetchFriends = async () => {
@@ -32,7 +40,7 @@ function App() {
     } catch (error) {
       console.log(error)
     }
-  }, [])
+  }, [friends.length])
 
   const handleKeyPress = (e) => {
     // keyCode 13 means the 'Enter' key
@@ -86,6 +94,7 @@ function App() {
             Search Friends
           </Button>
           <Button onClick={fetchFriends}>See All Friends</Button>
+          <button onClick={fetchEvents}>Fetch</button>
         </div>
       </div>
     </div>

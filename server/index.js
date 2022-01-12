@@ -105,6 +105,10 @@ const FRIENDS = [
 
 app.use(cors());
 
+app.get('/api/events', (req, res) => {
+  return res.send({ events: EVENTS })
+})
+
 app.get('/api/friends', (req, res) => {
   return res.send({ friends: FRIENDS })
 })
