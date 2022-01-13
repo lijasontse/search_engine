@@ -14,21 +14,25 @@ function App() {
 
   const fetchEvents = async () => {
     const res = await axios.get('/api/events');
-    console.log(res.data.events)
     setEvents(res.data.events)
   }
 
+  console.log(events)
 
   const fetchFriends = async () => {
     const res = await axios.get('/api/friends');
     const data = res.data;
     setFriends(data.friends)
   }
+
+  // Without Creating API Folder and making a GET Request there
+  // const fetchDataBySearch = (searchQuery) => {
+  //   return axios.get(`/api/search?searchQuery=${searchQuery.searchTerm || 'none'}&tags=${searchQuery.tags}`)
+  // }
   
   const searchHandler = async () => {
     if (searchTerm.trim().length !== 0 || tags.length !== 0) {
       const res = await fetchDataBySearch({ searchTerm, tags: tags.join(',') })
-      // const res = await axios.get(`/api/search?searchQuery?${searchQuery.searchTerm || 'none'}&tags=${searchQuery.tags}`)
       const data = res.data;
       setFriends(data)
     } 
@@ -40,7 +44,7 @@ function App() {
     } catch (error) {
       console.log(error)
     }
-  }, [friends.length])
+  }, [])
 
   const handleKeyPress = (e) => {
     // keyCode 13 means the 'Enter' key

@@ -126,12 +126,26 @@ app.get('/api/search', async (req, res) => {
     return firstName.match(name) || lastName.match(name)
   })
 
+  // Using reduce to replace filter().map() - and then pushing
+  // in the current friend's object if satisfy condition. 
   if (tags) {
-    tagsMatch = await FRIENDS.filter(friends => {
-      const loweredTags = friends.tags.map(tag => tag.replace(/\s/g, '').toLowerCase())
-      return loweredTags.some(ele => tags.split(',').includes(ele))
-    })
+    tagsMatch = await FRIENDS.reduce((prev, curr) => {
+      curr.tags.forEach(tag => {
+        const lowered = tag.replace(/\s/g, '').toLowerCase();
+        if (tags.split(',').includes(lowered)) prev.push(curr);
+      })
+      return prev
+    }, [])
   }
+
+  // if (tags) {
+  //   tagsMatch = await FRIENDS.filter(friends => {
+  //     const loweredTags = friends.tags.map(tag => tag.replace(/\s/g, '').toLowerCase())
+  //     console.log(loweredTags)
+  //     return loweredTags.some(ele => tags.split(',').includes(ele))
+  //   })
+  // }
+
 
   let resultWithDupes;
   if (searchQuery && tags) {
