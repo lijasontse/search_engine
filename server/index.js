@@ -57,7 +57,7 @@ const FRIENDS = [
     id: '8',
     firstName: 'Matt',
     lastName: 'Deng',
-    tags: ['Buff', 'Over 21'],
+    tags: ['Peanut', 'Over 21'],
   },
   {
     id: '9',
@@ -131,9 +131,11 @@ app.get('/api/search', async (req, res) => {
   if (tags) {
     tagsMatch = await FRIENDS.reduce((prev, curr) => {
       curr.tags.forEach(tag => {
+        console.log(tag)
         const lowered = tag.replace(/\s/g, '').toLowerCase();
         if (tags.split(',').includes(lowered)) prev.push(curr);
       })
+      console.log(prev)
       return prev
     }, [])
   }
@@ -141,7 +143,6 @@ app.get('/api/search', async (req, res) => {
   // if (tags) {
   //   tagsMatch = await FRIENDS.filter(friends => {
   //     const loweredTags = friends.tags.map(tag => tag.replace(/\s/g, '').toLowerCase())
-  //     console.log(loweredTags)
   //     return loweredTags.some(ele => tags.split(',').includes(ele))
   //   })
   // }

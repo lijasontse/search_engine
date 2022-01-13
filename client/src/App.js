@@ -4,20 +4,28 @@ import Friends from './Friends/Friends';
 import ChipInput from 'material-ui-chip-input'
 import { TextField, Button } from '@material-ui/core'
 import { fetchDataBySearch } from './api';
+import Events from './Events/Events';
 
 function App() {
   const [friends, setFriends] = useState([]);
   const [tags, setTags] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [groupFriends, setGroupFriends] = useState([]);
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState([] || null);
 
   const fetchEvents = async () => {
     const res = await axios.get('/api/events');
+    console.log(res.data)
     setEvents(res.data.events)
   }
 
-  console.log(events)
+  useEffect(() => {
+    try {
+      fetchEvents()
+    } catch (error) {
+      console.log(error)
+    }
+  }, [])
 
   const fetchFriends = async () => {
     const res = await axios.get('/api/friends');
@@ -98,7 +106,11 @@ function App() {
             Search Friends
           </Button>
           <Button onClick={fetchFriends}>See All Friends</Button>
-          <button onClick={fetchEvents}>Fetch</button>
+          {/* <button onClick={fetchEvents}>Fetch</button> */}
+          {/* <button onClick={groupByEvents}>Group</button> */}
+        </div>
+        <div>
+          <Events friends={friends} events={events} />
         </div>
       </div>
     </div>
